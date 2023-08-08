@@ -6,26 +6,7 @@ import {Ripple} from "primereact/ripple";
 import { Badge } from 'primereact/badge';
 
 const AppSubmenu = (props) => {
-    const menuData = [
-        {
-          label: 'Home',
-          icon: 'pi pi-home',
-          to: '/'
-        },
-        {
-          label: 'Products',
-          icon: 'pi pi-folder',
-          items: [
-            { label: 'Product 1', icon: 'pi pi-th-large', to: '/products/product1' },
-            { label: 'Product 2', icon: 'pi pi-th-large', to: '/products/product2' }
-          ]
-        },
-        {
-          label: 'About',
-          icon: 'pi pi-info',
-          to: '/about'
-        }
-      ];
+    
       
 
     const [activeIndex, setActiveIndex] = useState(null)

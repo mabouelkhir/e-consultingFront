@@ -18,6 +18,8 @@ import FormLayoutDemo from './components/FormLayoutDemo';
 import InputDemo from './components/InputDemo';
 import ListDemo from './components/ListDemo';
 import MenuDemo from './components/MenuDemo';
+import Candidats from './components/Candidats';
+import AjouterUser from './components/AjouterUser';
 import MessagesDemo from './components/MessagesDemo';
 import MiscDemo from './components/MiscDemo';
 import OverlayDemo from './components/OverlayDemo';
@@ -163,8 +165,10 @@ const App = () => {
             }]
         },
         {
-            label: 'UI Components', icon: 'pi pi-fw pi-sitemap',
+            label: 'Gestion', icon: 'pi pi-fw pi-sitemap',
             items: [
+                { label: 'Gestion des Utilisateurs', icon: 'pi pi-fw pi-id-card', to: '/users'},
+                { label: 'Gestion des Candidats', icon: 'pi pi-fw pi-id-card', to: '/candidats'},
                 { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/formlayout' },
                 { label: 'Input', icon: 'pi pi-fw pi-check-square', to: '/input' },
                 { label: "Float Label", icon: "pi pi-fw pi-bookmark", to: "/floatlabel" },
@@ -309,6 +313,8 @@ const App = () => {
                     <Route path="/overlay" component={OverlayDemo} />
                     <Route path="/media" component={MediaDemo} />
                     <Route path="/menu" component={MenuDemo} />
+                    <Route path="/candidats" component={Candidats} />
+                    <Route path="/users" component={AjouterUser} />
                     <Route path="/messages" component={MessagesDemo} />
                     <Route path="/blocks" component={BlocksDemo} />
                     <Route path="/icons" component={IconsDemo} />
