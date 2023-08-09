@@ -110,7 +110,7 @@ const TableDemo = () => {
     }
 
     const filterClearTemplate = (options) => {
-        return <Button type="button" icon="pi pi-times" onClick={options.filterClearCallback} className="p-button-secondary"></Button>;
+        return <Button type="button" icon="pi pi-times" onClick={options.filterClearCallback} className="p-button-secondary">mohamed</Button>;
     }
 
     const filterApplyTemplate = (options) => {
