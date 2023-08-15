@@ -46,6 +46,16 @@ import './assets/demo/flags/flags.css';
 import './assets/demo/Demos.scss';
 import './assets/layout/layout.scss';
 import './App.scss';
+import { Redirect } from 'react-router-dom';
+import Homepage from './components/Homepage';
+import RejoignezNous from './components/Rejoignez-nous'; 
+import LoginForm from './components/LoginForm';
+
+
+
+
+
+
 
 const App = () => {
     const [layoutMode, setLayoutMode] = useState('static');
@@ -161,7 +171,7 @@ const App = () => {
         {
             label: 'Home',
             items: [{
-                label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/'
+                label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/'                
             }]
         },
         {
@@ -288,18 +298,28 @@ const App = () => {
     });
 
     return (
+       
+        <div>
+        <Route path="/" exact render={() => <Redirect to="/homepage" />} />
+        <Route path="/homepage" exact render={() => <Homepage />} />
+                 <Route path="/rejoignez-nous" component={RejoignezNous} />
+                 <Route path="/loginform" component={LoginForm}/>
+    
         <div className={wrapperClass} onClick={onWrapperClick}>
+       
             <Tooltip ref={copyTooltipRef} target=".block-action-copy" position="bottom" content="Copied to clipboard" event="focus" />
-
+           
             <AppTopbar onToggleMenuClick={onToggleMenuClick} layoutColorMode={layoutColorMode}
                 mobileTopbarMenuActive={mobileTopbarMenuActive} onMobileTopbarMenuClick={onMobileTopbarMenuClick} onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick} />
-
+   
             <div className="layout-sidebar" onClick={onSidebarClick}>
                 <AppMenu model={menu} onMenuItemClick={onMenuItemClick} layoutColorMode={layoutColorMode} />
             </div>
 
             <div className="layout-main-container">
+        
                 <div className="layout-main">
+
                     <Route path="/" exact render={() => <Dashboard colorMode={layoutColorMode} location={location} />} />
                     <Route path="/formlayout" component={FormLayoutDemo} />
                     <Route path="/input" component={InputDemo} />
@@ -336,7 +356,11 @@ const App = () => {
             <CSSTransition classNames="layout-mask" timeout={{ enter: 200, exit: 200 }} in={mobileMenuActive} unmountOnExit>
                 <div className="layout-mask p-component-overlay"></div>
             </CSSTransition>
+        
 
+            
+        
+        </div>
         </div>
     );
 
