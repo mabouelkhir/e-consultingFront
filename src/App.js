@@ -30,6 +30,8 @@ import TreeDemo from './components/TreeDemo';
 import InvalidStateDemo from './components/InvalidStateDemo';
 import BlocksDemo from './components/BlocksDemo';
 import IconsDemo from './components/IconsDemo';
+import Fonctions from './components/Fonctions'
+import Identity_piece from './components/Identity_piece'
 
 import Crud from './pages/Crud';
 import EmptyPage from './pages/EmptyPage';
@@ -179,6 +181,8 @@ const App = () => {
             items: [
                 { label: 'Gestion des Utilisateurs', icon: 'pi pi-fw pi-id-card', to: '/users'},
                 { label: 'Gestion des Candidats', icon: 'pi pi-fw pi-id-card', to: '/candidats'},
+                { label: 'Gestion des Fonctions', icon: 'pi pi-fw pi-id-card', to: '/fonctions'},
+                { label: 'Gestion des piece des identité', icon: 'pi pi-fw pi-id-card', to: '/id_pieces'},
                 { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/formlayout' },
                 { label: 'Input', icon: 'pi pi-fw pi-check-square', to: '/input' },
                 { label: "Float Label", icon: "pi pi-fw pi-bookmark", to: "/floatlabel" },
@@ -326,6 +330,8 @@ const App = () => {
                     <Route path="/floatlabel" component={FloatLabelDemo} />
                     <Route path="/invalidstate" component={InvalidStateDemo} />
                     <Route path="/button" component={ButtonDemo} />
+                    <Route path="/fonctions" component={Fonctions} />
+                    <Route path="/id_pieces" component={Identity_piece} />
                     <Route path="/table" component={TableDemo} />
                     <Route path="/list" component={ListDemo} />
                     <Route path="/tree" component={TreeDemo} />
