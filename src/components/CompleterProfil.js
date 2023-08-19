@@ -31,7 +31,9 @@ export const CompleterProfil = () => {
             const response = await axios.get('http://localhost:8080/api/candidat/candidats/actifs');
             const formattedCandidats = response.data.map(candidat => ({
                 ...candidat,
-                fullName: `${candidat.prenom} ${candidat.nom}`
+                fullName: `${candidat.prenom} ${candidat.nom}`,
+                date_naissance: new Date(candidat.date_naissance) // Convert the date string to a Date object
+
             }));
             setAutoValue(formattedCandidats);
             setAutoFilteredValue([...formattedCandidats]);
@@ -43,8 +45,9 @@ export const CompleterProfil = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:8080/api/candidat/${selectedCandidat.id}/update`, selectedCandidat);
+            await axios.put(`http://localhost:8080/api/candidat/${selectedCandidat.id}/Update`, selectedCandidat);
             console.log('Data updated successfully!');
+            fetchCandidats();
         } catch (error) {
             console.error('Error updating data:', error);
         }
@@ -140,6 +143,7 @@ export const CompleterProfil = () => {
                                 showButtonBar
                                 value={selectedCandidat?.date_naissance || null}
                                 onChange={(e) => setSelectedCandidat(prev => ({ ...prev, date_naissance: e.value }))}
+                                dateFormat="dd/mm/yy" // Set the desired date format
                             />
 
                             <h5>Numero de telephone</h5>
