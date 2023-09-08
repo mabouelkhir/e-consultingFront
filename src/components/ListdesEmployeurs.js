@@ -7,6 +7,7 @@ import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
+import { Dialog} from 'primereact/dialog';
 
 import axios from 'axios';
 
@@ -15,8 +16,11 @@ const ListdesEmployeurs = () => {
 
     const [employeur, setEmployeur] = useState([]);
     const [filters1, setFilters1] = useState(null);
-
-
+    const [selectedEmployeur,setSelectedEmployeur] = useState(null);
+  
+   
+    
+    
     
     const [formData, setFormData] = useState({
         nom: '',
@@ -24,7 +28,104 @@ const ListdesEmployeurs = () => {
         email: '',
         adresse: '',  
         num_tel: '',     
+        codeEmp:'',
+        prestation:'',
+        ref_contrat:''
     });
+
+    const [updateDialogVisible, setUpdateDialogVisible] = useState(false);
+    const [updateFormData, setUpdateFormData] = useState({
+        email: '',
+        adresse: '',
+        num_tel: '',
+        codeEmp:'',
+      
+        ref_contrat: ''
+    });
+
+    const showUpdateDialog = (employeur) => {
+        setSelectedEmployeur(employeur);
+        setUpdateFormData({
+            email:employeur.email,
+            adresse:employeur.adresse,
+            num_tel:employeur.num_tel,
+            codeEmp:employeur.codeEmp,
+            ref_contrat:employeur.ref_contrat
+          
+        });
+        setUpdateDialogVisible(true);
+    };
+
+    const hideUpdateDialog = () => {
+        setUpdateDialogVisible(false);
+    };
+ 
+    
+
+    const fetchEmployeurs = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/employeur/All');
+            const updatedEmployeurs = response.data;
+            setEmployeur(updatedEmployeurs);
+            console.log('Employeurs updated successfully:', updatedEmployeurs);
+        } catch (error) {
+            console.error('Error fetching employeurs:', error);
+        }
+    };
+    
+    
+      const handleUpdateFormChange = (e) => {
+        const { name, value } = e.target;
+        setUpdateFormData((prevData) => ({
+          ...prevData,
+          [name]: value,
+        }));
+      };
+
+      const handleUpdateFormSubmit = async () => {
+        try {
+          // Assuming you have the ID of the selected dossier in selectedDossier.id
+          const employeurId = selectedEmployeur.id;
+      
+          // Construct the payload for the update request
+          const payload = {
+            email:updateFormData.email,
+            adresse:updateFormData.adresse,
+            num_tel:updateFormData.num_tel,
+            codeEmp:updateFormData.codeEmp,
+            ref_contrat:updateFormData.ref_contrat
+
+          };
+      
+          // Make the API call to update the dossier
+          const response = await axios.put(`http://localhost:8080/api/employeur/${employeurId}/Update`, payload);
+      
+          console.log('Employeur updated successfully:', response.data);
+      
+          // Show success toast
+          toast.current.show({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Employeur updated successfully.',
+          });
+      
+          // Close the update dialog
+          hideUpdateDialog();
+      
+          // Refresh the dossier list
+          fetchEmployeurs();
+          
+        } catch (error) {
+          console.error('Error updating Employeur:', error);
+      
+          // Show error toast
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: `Error updating employeur: ${error.message}`,
+          });
+        }
+      };
 
     const initFilters1 = () => {
         setFilters1({
@@ -33,63 +134,24 @@ const ListdesEmployeurs = () => {
             'email': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'adresse': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'num_tel': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            'codeEmp':{ operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            'prestation':{ operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            'ref_contrat':{ operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            
 
             
         });
     }
 
-    const handleSubmit = async () => {
-        try {
-          
-        
-            // Make the POST request to the API
-            const response = await axios.post('http://localhost:8080/api/employeur/Save', formData);
-        
-            // Handle success (you can display a success message here)
-            console.log('Data saved:', response.data);
-        
-            // Update the users list or refresh the data after successful addition
-            // You can refetch the data or update the users list in state here
-        
-            // Clear all input fields by resetting formData to its initial state
-            setFormData({
-                nom: '',
-                prenom: '',
-                email: '',
-                adresse:'',
-                num_tel:'',
-
-              
-            });
-          
-        
-            // Show success toast
-            toast.current.show({ severity: 'success', summary: 'Success', detail: 'Employeur added successfully.' });
-            // Fetch the updated list of users from the API
-        fetch('http://localhost:8080/api/employeur/All')
-        .then(response => response.json())
-        .then(data => {
-            setEmployeur(data);
-            console.log(data);
-            initFilters1();
-        })
-        .catch(error => {
-            console.error('Error fetching employeurs:', error);
-        });
-        } catch (error) {
-            // Handle error (you can display an error message here)
-            console.error('Error saving data:', error);
-            // Show error toast
-            toast.current.show({ severity: 'error', summary: 'Error', detail: `Error saving data: ${error.message}` });
-        }
-    };
+  
     useEffect(() => {
         fetch('http://localhost:8080/api/employeur/All')
             .then(response => response.json())
             .then(data => {
                 setEmployeur(data);
-                console.log(data);
+                console.log('Employeurs:',data);
                 initFilters1();
+                console.log(employeur);
             })
             .catch(error => {
                 console.error('Error fetching employeurs:', error);
@@ -117,60 +179,86 @@ const ListdesEmployeurs = () => {
         }
     };
     
-    
-
-    
-   
-    
-
-    
-
-   
-    
     const operationBodyTemplate = (rowData) => {
         return (
             <div>
-               
+                 <Button label="Modifier" className="p-button-rounded p-button-primary" onClick={() => showUpdateDialog(rowData)} />
                 <Button label="Supprimer" className="p-button-rounded p-button-danger" onClick={() => deleteEmployeur(rowData.id)} />
             </div>
         );
     };
-    
-    
-    
+   
+    const renderUpdateDialog = () => {
+        return (
+          <Dialog
+            visible={updateDialogVisible}
+            onHide={hideUpdateDialog}
+            header="Update Employeur"
+            style={{ width: '50%' }}
+          >
+            <div>
+              <div className="p-field">
+                <label htmlFor="email">E-mail</label>
+                <InputText
+                  id="updateemail"
+                  type="text"
+                  name="email"
+                  value={updateFormData.email}
+                  onChange={handleUpdateFormChange}
+                />
+              </div>
+              <div className="p-field">
+                <label htmlFor="adresse">Adresse</label>
+                <InputText
+                  id="updateAdresse"
+                  type="text"
+                  name="adresse"
+                  value={updateFormData.adresse}
+                  onChange={handleUpdateFormChange}
+                />
+              </div>
+              <div className="p-field">
+                <label htmlFor="num_tel">Num_Tel</label>
+                <InputText
+                  id="updatenum_tel"
+                  type="text"
+                  name="num_tel"
+                  value={updateFormData.num_tel}
+                  onChange={handleUpdateFormChange}
+                />
+              </div>
+              <div className="p-field">
+                <label htmlFor="codeEmp">Code_Emp</label>
+                <InputText
+                  id="updatecodeEmp"
+                  type="text"
+                  name="codeEmp"
+                  value={updateFormData.codeEmp}
+                  onChange={handleUpdateFormChange}
+                />
+              </div>
+              <div className="p-field">
+                <label htmlFor="ref_contrat">Ref_Contrat</label>
+                <InputText
+                  id="updateref_contrat"
+                  type="text"
+                  name="ref_contrat"
+                  value={updateFormData.ref_contrat}
+                  onChange={handleUpdateFormChange}
+                />
+              </div>
+              
 
-    return (
-        <div className="grid">
-            <div className="col-12">
-                <div className="card">
-                    <h5>Ajouter un Employeur</h5>
-                    <div className="p-fluid formgrid grid">
-                       
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="nom">Nom</label>
-                            <InputText id="nom" type="text" value={formData.nom} onChange={(e) => setFormData({ ...formData, nom: e.target.value })} />
-                        </div>
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="prenom">Prenom</label>
-                            <InputText id="prenom" type="text" value={formData.prenom} onChange={(e) => setFormData({ ...formData, prenom: e.target.value })} />
-                        </div>
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="email">E-mail</label>
-                            <InputText id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
-                        </div>
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="adresse">Adresse</label>
-                            <InputText id="adresse" type="adresse" value={formData.adresse} onChange={(e) => setFormData({ ...formData, adresse: e.target.value })} />
-                        </div>
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="num_tel">Num_Tel</label>
-                            <InputText id="num_tel" type="text" value={formData.num_tel} onChange={(e) => setFormData({ ...formData, num_tel: e.target.value })} />
-                        </div>
-                       
-                        <Button label="Submit" onClick={handleSubmit}></Button>
-                    </div>
-                </div>
+              <Button
+                label="Update"
+                onClick={handleUpdateFormSubmit}
+              />
             </div>
+          </Dialog>
+        );
+      };    
+
+    return(
             <div className="col-12">
                 <div className="card">
                     <h5>List des Employeurs</h5>
@@ -182,13 +270,24 @@ const ListdesEmployeurs = () => {
                         <Column field="email" header="Email" filter filterPlaceholder="Search by email" style={{ minWidth: '12rem' }} />
                         <Column field="adresse" header="Adresse" filter filterPlaceholder="Search by adresse" style={{ minWidth: '12rem' }} />
                         <Column field="num_tel" header="Num_Tel" filter filterPlaceholder="Search by num_tel" style={{ minWidth: '12rem' }} />
+                        <Column field="codeEmp" header="Code_Emp" filter filterPlaceholder="Search by code_emp" style={{ minWidth: '12rem' }} />
+                        <Column field="prestation" header="Prestation" filter filterPlaceholder="Search by prestation" style={{ minWidth: '12rem' }} />
+                        <Column field="ref_contrat" header="Ref_contrat" filter filterPlaceholder="Search by ref_contrat" style={{ minWidth: '12rem' }} />
                         <Column header="Opération" body={operationBodyTemplate} style={{ minWidth: '10rem', textAlign: 'center' }} />
+
+
                     </DataTable>
                     <Toast ref={toast} />
+
+                    
+                    {renderUpdateDialog()}
                 </div>
             </div>
-        </div>
-    );
+        
+    
+    )
+              
+    
 }
 
 export default ListdesEmployeurs;

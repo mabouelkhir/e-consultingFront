@@ -14,7 +14,9 @@ import { Calendar } from 'primereact/calendar';
 
 export const CandidatActiveList = () => {
     const [candidats, setCandidats] = useState([]);
-    const [filters1, setFilters1] = useState(null);
+    const [filters1,setFilters1] = useState([]);
+   
+
     const toast = useRef(null);
 
     useEffect(() => {
@@ -24,10 +26,14 @@ export const CandidatActiveList = () => {
     const fetchCandidats = async () => {
         try {
             const response = await axios.get('http://localhost:8080/api/candidat/candidats/actifs');
-            setCandidats(response.data);
-            console.log(response.data);
-            initFilters1();
-
+            const candidatsData = response.data;
+            
+             // Filtrer les candidats correspondants à l'employeur sélectionné
+      
+           // Mettre à jour la liste des candidats affichés
+       setCandidats(candidatsData);
+            console.log('candidatsData:', candidatsData);
+     
         } catch (error) {
             console.error('Error fetching candidats:', error);
         }
@@ -106,11 +112,11 @@ export const CandidatActiveList = () => {
     
             // Update the users list or refresh the data after successful operation
             // You can refetch the data or update the users list in state here
-            const updatedUsers = candidats.map(candidat => {
-                if (candidat.id === userId) {
-                    return { ...candidat, status: newStatus };
+            const updatedUsers = candidats.map(candidats => {
+                if (candidats.id === userId) {
+                    return { ...candidats, status: newStatus };
                 }
-                return candidat;
+                return candidats;
             });
             setCandidats(updatedUsers);
     
@@ -132,7 +138,7 @@ export const CandidatActiveList = () => {
     
             // Update the users list or refresh the data after successful deletion
             // You can refetch the data or update the users list in state here
-            const updatedUsers = candidats.filter(candidat => candidat.id !== userId);
+            const updatedUsers = candidats.filter(candidats => candidats.id !== userId);
             setCandidats(updatedUsers);
     
             // Show success toast
@@ -147,7 +153,7 @@ export const CandidatActiveList = () => {
     const continueCandidat = async (candidatID) => {
         console.log(candidatID);
     }
-
+    
     return (
         <div className="grid p-fluid">
             
@@ -182,6 +188,10 @@ export const CandidatActiveList = () => {
                     <Toast ref={toast} />
                 </div>
             </div>
+            
+          
+        
         </div>
     );
 }
+export default CandidatActiveList;

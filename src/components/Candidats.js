@@ -18,6 +18,7 @@ import { ConfirmationDemo } from '../components/menu/ConfirmationDemo';
 import {CandidatList} from './CandidatList'
 import { CompleterProfil } from './CompleterProfil';
 import { CandidatActiveList } from './CandidatActiveList';
+import { Gestiondesentretiens } from './Gestiondesentretiens';
 
 
 const Candidats = () => {
@@ -41,24 +42,12 @@ const Candidats = () => {
         { label: 'liste des candidats actifs', command: () => history.push('/candidats/actifs') },
         { label: 'Completer le profil', command: () => history.push('/candidats/profil') },
         { label: 'Gestion des Dossiers', command: () => history.push('/candidats/dossiers') },
+        { label:'Gestion des entretiens', command: () =>history.push('/candidats/entretiens')}
         
         
     ];
 
   
-
-   
-  
-
-  
-
-  
-
- 
-
-
-    
-    
 
     return (
         <div className="grid p-fluid">
@@ -71,7 +60,8 @@ const Candidats = () => {
                     <Route exact path={'/candidats'} component={CandidatList} />
                     <Route exact path={'/candidats/actifs'} component={CandidatActiveList} />
                     <Route exact path={'/candidats/profil'} component={CompleterProfil} />
-                    <Route path={'/candidats/dossiers'} component={ConfirmationDemo} />
+                    <Route exact path={'/candidats/dossiers'} component={ConfirmationDemo} />
+                    <Route exact path={'/candidats/entretiens'} component={Gestiondesentretiens}/>
                     
                 </div>
             </div>

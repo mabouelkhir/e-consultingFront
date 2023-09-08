@@ -16,7 +16,7 @@ import { Route, useHistory, useLocation } from 'react-router-dom';
 import { PersonalDemo } from '../components/menu/PersonalDemo';
 import { ConfirmationDemo } from '../components/menu/ConfirmationDemo';
 import ListdesAgents  from './ListdesAgents';
-import TableOperationAgent from './TableOperationAgent';
+import TableOperation_Agent from './TableOperation_Agent';
 
 
 
@@ -60,7 +60,7 @@ const Agents = () => {
                     <h5>Gestion des Agents</h5>
                     <TabMenu model={wizardItems} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)} />
                     <Route exact path={'/agents'} component={ListdesAgents} />
-                    <Route exact path={'/agents/operations'} component={TableOperationAgent} />
+                    <Route exact path={'/agents/operations'} component={TableOperation_Agent} />
                    
                     
                 </div>

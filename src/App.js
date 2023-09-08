@@ -22,6 +22,8 @@ import Candidats from './components/Candidats';
 import Agents from './components/Agents';
 import Employeur from './components/Employeur';
 import AjouterUser from './components/AjouterUser';
+import Reglement from './components/Reglement';
+import Rendez_vous from './components/Rendez_vous';
 
 import MessagesDemo from './components/MessagesDemo';
 import MiscDemo from './components/MiscDemo';
@@ -55,6 +57,10 @@ import { Redirect } from 'react-router-dom';
 import Homepage from './components/Homepage';
 import RejoignezNous from './components/Rejoignez-nous'; 
 import LoginForm from './components/LoginForm';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+
+
 
 
 
@@ -187,7 +193,10 @@ const App = () => {
                 { label: 'Gestion des Employeurs', icon: 'pi pi-fw pi-id-card', to: '/employeur'},
                 { label: 'Gestion des Fonctions', icon: 'pi pi-fw pi-id-card', to: '/fonctions'},
                 { label: 'Gestion des Agents', icon: 'pi pi-fw pi-id-card', to: '/agents'},
+                { label: 'Gestion des Reglements', icon: 'pi pi-fw pi-id-card', to: '/reglements'},
                 { label: 'Gestion des piece des identité', icon: 'pi pi-fw pi-id-card', to: '/id_pieces'},
+                { label: 'Gestion des Rendez-vous', icon: 'pi pi-fw pi-id-card', to: '/rendez-vous'},
+                
                 
                 { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/formlayout' },
                 { label: 'Input', icon: 'pi pi-fw pi-check-square', to: '/input' },
@@ -349,6 +358,10 @@ const App = () => {
                     <Route path="/candidats" component={Candidats} />
                     <Route path="/agents" component={Agents} />
                     <Route path="/employeur" component={Employeur} />
+                    <Route path="/reglements" component={Reglement} />
+                    <Route path="/rendez-vous" component={Rendez_vous} />
+
+
                 
                     
                     <Route path="/users" component={AjouterUser} />

@@ -12,7 +12,7 @@ import { Calendar } from 'primereact/calendar';
 import { CandidatActiveList } from './CandidatActiveList';
 import Candidats from './Candidats';
 
- const ListdesCandidatsActifs= () => {
+export const Gestiondesentretiens= () => {
 
     const [ListdesCandidatsActifs, setListdesCandidatsActifs] = useState([]);
     const [candidats, setCandidats] = useState([]);
@@ -180,4 +180,3 @@ try {
 
 
 
-export default ListdesCandidatsActifs;

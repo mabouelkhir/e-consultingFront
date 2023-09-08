@@ -17,6 +17,7 @@ import { PersonalDemo } from '../components/menu/PersonalDemo';
 import { ConfirmationDemo } from '../components/menu/ConfirmationDemo';
 import ListdesEmployeurs from './ListdesEmployeurs';
 import ListdesCandidatsActifs from './ListdesCandidatsActifs';
+import RechercherEmployeurparCandidat from './RechercherEmployeurparCandidat';
 
 
 
@@ -40,6 +41,8 @@ const Employeur = () => {
     const wizardItems = [
         { label: 'List des Employeurs', command: () => history.push('/employeur/') },
         { label: 'List des Candidats Actifs', command: () => history.push('/employeur/candidatsactifs') },
+        { label: 'Rechercher Employeur par Candidat', command: () => history.push('/employeur/searchemployeurparcandidat') },
+
       
         
         
@@ -61,6 +64,7 @@ const Employeur = () => {
                     <TabMenu model={wizardItems} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)} />
                     <Route exact path={'/employeur'} component={ListdesEmployeurs} />
                     <Route exact path={'/employeur/candidatsactifs'} component={ListdesCandidatsActifs} />
+                    <Route exact path ={'/employeur/searchemployeurparcandidat'} component={RechercherEmployeurparCandidat}/>
                    
                     
                 </div>
