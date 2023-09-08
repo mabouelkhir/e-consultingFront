@@ -20,7 +20,6 @@ const Candidats = () => {
         { label: 'Ajouter Fonctions', command: () => history.push('/candidats/fonctions') },
         { label: 'Ajouter Permis', command: () => history.push('/candidats/permis') },
         { label: 'Ajouter Passport', command: () => history.push('/candidats/passport') },
-        { label: 'Gestion des Dossiers', command: () => history.push('/candidats/dossiers') },
         { label:'Gestion des entretiens', command: () =>history.push('/candidats/entretiens')}
         
         
@@ -42,10 +41,6 @@ const Candidats = () => {
                     <Route path={'/candidats/fonctions'} component={FonctionCandidat} />
                     <Route path={'/candidats/permis'} component={AjouterPermis} />
                     <Route path={'/candidats/passport'} component={AjouterPassport} />
-
-
-
-                    <Route exact path={'/candidats/dossiers'} component={ConfirmationDemo} />
                     <Route exact path={'/candidats/entretiens'} component={Gestiondesentretiens}/>
                     
                 </div>

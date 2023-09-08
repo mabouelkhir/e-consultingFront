@@ -462,6 +462,15 @@ export const CandidatActiveList = () => {
                                                 onChange={(e) => setSelectedCandidat(prev => ({ ...prev, cin: { ...prev.cin, date_naissance: e.value } }))}
                                                 dateFormat="dd/mm/yy"
                                             />
+                                            <br /><br />
+
+                                            <label htmlFor="observation">Réference Contrat</label>
+                                            <InputText
+                                                id="contrat"
+                                                type="text"
+                                                value={selectedCandidat?.Ref_contrat || ''}
+                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, Ref_contrat: e.target.value }))}
+                                            />
 
                                         </div>
                                         <div className="col-12 md:col-4">
