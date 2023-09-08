@@ -19,7 +19,12 @@ import InputDemo from './components/InputDemo';
 import ListDemo from './components/ListDemo';
 import MenuDemo from './components/MenuDemo';
 import Candidats from './components/Candidats';
+import Agents from './components/Agents';
+import Employeur from './components/Employeur';
 import AjouterUser from './components/AjouterUser';
+import Reglement from './components/Reglement';
+import Rendez_vous from './components/Rendez_vous';
+
 import MessagesDemo from './components/MessagesDemo';
 import MiscDemo from './components/MiscDemo';
 import OverlayDemo from './components/OverlayDemo';
@@ -54,6 +59,10 @@ import { Redirect } from 'react-router-dom';
 import Homepage from './components/Homepage';
 import RejoignezNous from './components/Rejoignez-nous'; 
 import LoginForm from './components/LoginForm';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+
+
 
 
 
@@ -183,9 +192,18 @@ const App = () => {
             items: [
                 { label: 'Gestion des Utilisateurs', icon: 'pi pi-fw pi-id-card', to: '/users'},
                 { label: 'Gestion des Candidats', icon: 'pi pi-fw pi-id-card', to: '/candidats'},
+                { label: 'Gestion des Employeurs', icon: 'pi pi-fw pi-id-card', to: '/employeur'},
                 { label: 'Gestion des Fonctions', icon: 'pi pi-fw pi-id-card', to: '/fonctions'},
+<<<<<<< HEAD
                 { label: 'Gestion des Dossiers', icon: 'pi pi-fw pi-id-card', to: '/dossiers'},
+=======
+                { label: 'Gestion des Agents', icon: 'pi pi-fw pi-id-card', to: '/agents'},
+                { label: 'Gestion des Reglements', icon: 'pi pi-fw pi-id-card', to: '/reglements'},
+>>>>>>> 42a8d7fb643f9ff225943b78b0af939d591f693f
                 { label: 'Gestion des piece des identité', icon: 'pi pi-fw pi-id-card', to: '/id_pieces'},
+                { label: 'Gestion des Rendez-vous', icon: 'pi pi-fw pi-id-card', to: '/rendez-vous'},
+                
+                
                 { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/formlayout' },
                 { label: 'Input', icon: 'pi pi-fw pi-check-square', to: '/input' },
                 { label: "Float Label", icon: "pi pi-fw pi-bookmark", to: "/floatlabel" },
@@ -311,6 +329,7 @@ const App = () => {
         <Route path="/homepage" exact render={() => <Homepage />} />
                  <Route path="/rejoignez-nous" component={RejoignezNous} />
                  <Route path="/loginform" component={LoginForm}/>
+                
     
         <div className={wrapperClass} onClick={onWrapperClick}>
        
@@ -345,6 +364,14 @@ const App = () => {
                     <Route path="/media" component={MediaDemo} />
                     <Route path="/menu" component={MenuDemo} />
                     <Route path="/candidats" component={Candidats} />
+                    <Route path="/agents" component={Agents} />
+                    <Route path="/employeur" component={Employeur} />
+                    <Route path="/reglements" component={Reglement} />
+                    <Route path="/rendez-vous" component={Rendez_vous} />
+
+
+                
+                    
                     <Route path="/users" component={AjouterUser} />
                     <Route path="/messages" component={MessagesDemo} />
                     <Route path="/blocks" component={BlocksDemo} />

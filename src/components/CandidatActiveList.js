@@ -23,7 +23,9 @@ export const CandidatActiveList = () => {
     const [displayDialog, setDisplayDialog] = useState(false);
     const [selectedCandidat, setSelectedCandidat] = useState(null);
     const [candidats, setCandidats] = useState([]);
-    const [filters1, setFilters1] = useState(null);
+    const [filters1,setFilters1] = useState([]);
+   
+
     const toast = useRef(null);
     const fileUploadRef = useRef(null);
     const [candidatIdentityPieceChanges, setCandidatIdentityPieceChanges] = useState({});
@@ -99,10 +101,14 @@ export const CandidatActiveList = () => {
     const fetchCandidats = async () => {
         try {
             const response = await axios.get('http://localhost:8080/api/candidat/candidats/actifs');
-            setCandidats(response.data);
-            console.log(response.data);
-            initFilters1();
-
+            const candidatsData = response.data;
+            
+             // Filtrer les candidats correspondants à l'employeur sélectionné
+      
+           // Mettre à jour la liste des candidats affichés
+       setCandidats(candidatsData);
+            console.log('candidatsData:', candidatsData);
+     
         } catch (error) {
             console.error('Error fetching candidats:', error);
         }
@@ -132,7 +138,8 @@ export const CandidatActiveList = () => {
             'nom': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'email': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'createdAt': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
-            'status': { value: null, matchMode: FilterMatchMode.EQUALS }
+            'status': { value: null, matchMode: FilterMatchMode.EQUALS },
+            'ref_contrat': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }]}
         });
 
     }
@@ -186,11 +193,11 @@ export const CandidatActiveList = () => {
 
             // Update the users list or refresh the data after successful operation
             // You can refetch the data or update the users list in state here
-            const updatedUsers = candidats.map(candidat => {
-                if (candidat.id === userId) {
-                    return { ...candidat, status: newStatus };
+            const updatedUsers = candidats.map(candidats => {
+                if (candidats.id === userId) {
+                    return { ...candidats, status: newStatus };
                 }
-                return candidat;
+                return candidats;
             });
             setCandidats(updatedUsers);
 
@@ -212,7 +219,7 @@ export const CandidatActiveList = () => {
 
             // Update the users list or refresh the data after successful deletion
             // You can refetch the data or update the users list in state here
-            const updatedUsers = candidats.filter(candidat => candidat.id !== userId);
+            const updatedUsers = candidats.filter(candidats => candidats.id !== userId);
             setCandidats(updatedUsers);
 
             // Show success toast
@@ -363,6 +370,7 @@ export const CandidatActiveList = () => {
                         <Column header="Date de Creation" field="createdAt" filterField="createdAt" dataType="date" style={{ minWidth: '10rem' }} body={dateBodyTemplate}
                             filter filterElement={dateFilterTemplate} />
                         <Column field="status" header="Activation" dataType="boolean" bodyClassName="text-center" style={{ minWidth: '8rem' }} body={verifiedBodyTemplate} filter filterElement={verifiedFilterTemplate} />
+                        <Column header="Référence de Contrat" field="ref_contrat" filter filterPlaceholder="Search by reference" style={{ minWidth: '12rem' }} />
                         <Column header="Opération" body={operationBodyTemplate} style={{ minWidth: '10rem', textAlign: 'center' }} />
 
                         {/* Other columns you want to display */}
@@ -651,6 +659,10 @@ export const CandidatActiveList = () => {
                     </Dialog>
                 </div>
             </div>
+            
+          
+        
         </div>
     );
 }
+export default CandidatActiveList;

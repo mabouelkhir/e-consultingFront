@@ -7,6 +7,7 @@ import { CandidatActiveList } from './CandidatActiveList';
 import {FonctionCandidat} from './FonctionCandidat'
 import {AjouterPermis} from './AjouterPermis'
 import { AjouterPassport } from './AjouterPassport';
+import { Gestiondesentretiens } from './Gestiondesentretiens';
 
 
 const Candidats = () => {
@@ -19,12 +20,13 @@ const Candidats = () => {
         { label: 'Ajouter Fonctions', command: () => history.push('/candidats/fonctions') },
         { label: 'Ajouter Permis', command: () => history.push('/candidats/permis') },
         { label: 'Ajouter Passport', command: () => history.push('/candidats/passport') },
-
-
-
+        { label: 'Gestion des Dossiers', command: () => history.push('/candidats/dossiers') },
+        { label:'Gestion des entretiens', command: () =>history.push('/candidats/entretiens')}
         
         
     ];
+
+  
 
     return (
         <div className="grid p-fluid">
@@ -43,6 +45,8 @@ const Candidats = () => {
 
 
 
+                    <Route exact path={'/candidats/dossiers'} component={ConfirmationDemo} />
+                    <Route exact path={'/candidats/entretiens'} component={Gestiondesentretiens}/>
                     
                 </div>
             </div>
