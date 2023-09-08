@@ -206,22 +206,24 @@ const AjouterUser = () => {
             <div className="col-12">
                 <div className="card">
                     <h5>Ajouter un Utilisateur</h5>
+                    <form onSubmit={handleSubmit}>
+
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 md:col-6">
                             <label htmlFor="prenom">Prenom</label>
-                            <InputText id="prenom" type="text" value={formData.firstName} onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} />
+                            <InputText id="prenom" type="text" value={formData.firstName} onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} required/>
                         </div>
                         <div className="field col-12 md:col-6">
                             <label htmlFor="nom">Nom</label>
-                            <InputText id="nom" type="text" value={formData.lastName} onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} />
+                            <InputText id="nom" type="text" value={formData.lastName} onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} required/>
                         </div>
                         <div className="field col-12 md:col-6">
                             <label htmlFor="email">E-mail</label>
-                            <InputText id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                            <InputText id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required/>
                         </div>
                         <div className="field col-12 md:col-6">
                             <label htmlFor="password">Password</label>
-                            <InputText id="password" type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
+                            <InputText id="password" type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required/>
                         </div>
                         <div className="field col-12 md:col-3">
                             <label htmlFor="role">Role</label>
@@ -230,8 +232,9 @@ const AjouterUser = () => {
         setFormData({ ...formData, role: [e.value] }); // Update the role in formData
     }} options={dropdownItems} optionLabel="name" placeholder="Select One" />
                         </div>
-                        <Button label="Submit" onClick={handleSubmit}></Button>
+                        <Button label="Submit" type="submit"></Button>
                     </div>
+                    </form>
                 </div>
             </div>
             <div className="col-12">

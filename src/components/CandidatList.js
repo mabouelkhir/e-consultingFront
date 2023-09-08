@@ -6,7 +6,12 @@ import { DataTable } from 'primereact/datatable';
 import { Button } from 'primereact/button';
 import { classNames } from 'primereact/utils';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-
+import { InputText } from 'primereact/inputtext';
+import { Dialog } from 'primereact/dialog';
+import { RadioButton } from 'primereact/radiobutton';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { InputNumber } from 'primereact/inputnumber';
+import { FileUpload } from 'primereact/fileupload';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Calendar } from 'primereact/calendar';
 
@@ -14,7 +19,10 @@ import { Calendar } from 'primereact/calendar';
 
 export const CandidatList = () => {
     const [candidats, setCandidats] = useState([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedCandidat, setSelectedCandidat] = useState(null);
     const [filters1, setFilters1] = useState(null);
+    const fileUploadRef = useRef(null);
     const toast = useRef(null);
 
     useEffect(() => {
@@ -39,7 +47,7 @@ export const CandidatList = () => {
         if (value) {
             const date = new Date(value); // Convert the string value to a Date object
 
-            return date.toLocaleDateString('en-US', {
+            return date.toLocaleDateString('fr-FR', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric',
@@ -81,7 +89,7 @@ export const CandidatList = () => {
                 <Button
                     label="Completez le profil"
                     className="p-button-rounded p-button-warning"
-                    onClick={() => continueCandidat(rowData.id)}
+                    onClick={() => continueCandidat(rowData)}
                 />
             )}          
             </div>
@@ -122,6 +130,81 @@ export const CandidatList = () => {
             toast.current.show({ severity: 'error', summary: 'Error', detail: `Error toggling activation: ${error.message}` });
         }
     };
+    const updateProfile = async (e) => {
+        e.preventDefault();
+        try {
+            
+            console.log("candidat kaml :  "+selectedCandidat)
+            // Check if the candidate has a cin object
+            if (!selectedCandidat.cin || !selectedCandidat.cin.id) {
+
+            // Create a new cin object with code and date_naissance
+            const newCinData = {
+                code: selectedCandidat.cin.code, // Assuming you have a field for cin code
+                date_naissance: selectedCandidat.cin.date_naissance,
+                date_validite : selectedCandidat.cin.date_validite, // Assuming you have a field for cin date
+            };
+            
+            // Make a POST request to create the new cin object
+            const newCinResponse = await axios.post(`http://localhost:8080/cins/${selectedCandidat.id}`, newCinData);
+            console.log('New CIN data created successfully:', newCinResponse.data);
+
+            // Assign the newly created cin object to the selected candidate
+            setSelectedCandidat(prev => ({
+                ...prev,
+                cin: newCinResponse.data,
+            }));
+        }
+            // Update candidate's information
+            await axios.put(`http://localhost:8080/api/candidat/${selectedCandidat.id}/Update`, selectedCandidat);
+            console.log('Candidate data updated successfully!');
+
+            // Update candidate's cin information (No need to update it again if it was just created)
+        if (selectedCandidat.cin && selectedCandidat.cin.id) {
+            const cinUpdateData = {
+                code: selectedCandidat.cin.code,
+                date_naissance: selectedCandidat.cin.date_naissance,
+                date_validite : selectedCandidat.cin.date_validite, // Assuming you have a field for cin date
+
+            };
+
+            const cinUpdateResponse = await axios.put(`http://localhost:8080/cins/${selectedCandidat.cin.id}`, cinUpdateData);
+            console.log('CIN data updated successfully:', cinUpdateResponse.data);
+        }
+            // Update candidate's profile picture
+            if (fileUploadRef.current.files && fileUploadRef.current.files.length > 0) {
+                const formData = new FormData();
+                formData.append('image', fileUploadRef.current.files[0]);
+
+                const imageResponse = await axios.put(`http://localhost:8080/api/images/candidat/${selectedCandidat.id}/image`, formData);
+                console.log('Profile picture updated successfully:', imageResponse.data);
+            }
+
+            // Close the modal after updating
+            setIsModalVisible(false);
+            fetchCandidats();
+
+        } catch (error) {
+            console.error('Error updating data:', error);
+        }
+    };
+
+    const handleFileUpload = (event) => {
+        const formData = new FormData();
+        formData.append('image', event.files[0]); // Use 'image' as the field name
+
+        axios.put(`http://localhost:8080/api/images/candidat/${selectedCandidat.id}/image`, formData)
+            .then(response => {
+                console.log('Image upload response:', response.data);
+                // You can handle success actions here, like updating the image display or showing a success toast.
+                // Once the image is uploaded successfully, you might also want to trigger the profile update to fetch the updated image.
+                updateProfile(event); // Call the profile update function again to fetch updated data including the image.
+            })
+            .catch(error => {
+                console.error('Image upload error:', error);
+                // You can handle error actions here, like showing an error toast.
+            });
+    };
     
     
     const deleteUser = async (userId) => {
@@ -143,9 +226,13 @@ export const CandidatList = () => {
         }
     };
 
-    const continueCandidat = async (candidatID) => {
-        console.log(candidatID);
+    const continueCandidat = async (candidat) => {
+        setSelectedCandidat(candidat);
+        toggleModal(); // Show the modal
     }
+    const toggleModal = () => {
+        setIsModalVisible(!isModalVisible);
+    };
 
     return (
         <div className="grid p-fluid">
@@ -178,6 +265,178 @@ export const CandidatList = () => {
                         {/* Other columns you want to display */}
                     </DataTable>
                     <Toast ref={toast} />
+                    <Dialog style={{ width: '100%', maxWidth: '1200px' }} // Set the width and max-width
+                        className="p-dialog-center" // Center the dialog horizontally
+                        visible={isModalVisible} onHide={toggleModal}>
+                        <div className="col-12">
+                            <div className="card">
+                                <h2>Completez le profil</h2>
+                                <form>
+                                    <div className="grid p-fluid">
+                                        <div className="col-12 md:col-4">
+                                            <label htmlFor="firstName">Prenom</label>
+                                            <InputText id="firstName"
+                                                value={selectedCandidat?.prenom || ''}
+                                                disabled />
+                                            <label htmlFor="lastName">Last Name</label>
+                                            <InputText id="lastName"
+                                                value={selectedCandidat?.nom || ''}
+                                                disabled />
+                                            <br /><br />
+
+                                            <label htmlFor="email">Email</label>
+
+                                            <InputText
+                                                id="email"
+                                                type="text"
+                                                value={selectedCandidat?.email || ''}
+                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, email: e.target.value }))}
+                                            />
+                                            <br /><br />
+                                            <label htmlFor="gender">Genre</label>
+                                            <div className="grid">
+                                                <div className="col-12 md:col-4">
+                                                    <div className="field-radiobutton">
+                                                        <RadioButton
+                                                            inputId="option1"
+                                                            name="option"
+                                                            value="Male"
+                                                            checked={selectedCandidat?.sexe === 'Male'}
+                                                            onChange={(e) => setSelectedCandidat(prev => ({ ...prev, sexe: e.value }))}
+                                                        />
+                                                        <label htmlFor="option1">Male</label>
+                                                    </div>
+                                                </div>
+                                                <div className="col-12 md:col-4">
+                                                    <div className="field-radiobutton">
+                                                        <RadioButton
+                                                            inputId="option2"
+                                                            name="option"
+                                                            value="Female"
+                                                            checked={selectedCandidat?.sexe === 'Female'}
+                                                            onChange={(e) => setSelectedCandidat(prev => ({ ...prev, sexe: e.value }))}
+                                                        />
+                                                        <label htmlFor="option2">Female</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <label htmlFor="address">Adresse</label>
+                                            <InputTextarea
+                                                id="address"
+                                                placeholder="Adresse"
+                                                autoResize
+                                                rows="3"
+                                                cols="30"
+                                                value={selectedCandidat?.adresse || ''}
+                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, adresse: e.target.value }))}
+                                            />
+                                            <br /><br />
+
+                                            <label htmlFor="cinCode">Cin</label>
+                                            <InputText
+                                                id="cinCode"
+                                                type="text"
+                                                value={selectedCandidat?.cin?.code || ''}
+                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, cin: { ...prev.cin, code: e.target.value } }))}
+                                            />
+                                            <br /><br />
+
+                                            <label htmlFor="cinDate">Date de naissance</label>
+                                            <Calendar
+                                                id="cinDate"
+                                                showIcon
+                                                showButtonBar
+                                                value={selectedCandidat?.cin?.date_naissance ? new Date(selectedCandidat.cin.date_naissance) : null}
+                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, cin: { ...prev.cin, date_naissance: e.value } }))}
+                                                dateFormat="dd/mm/yy"
+                                            />
+                                            
+                                        </div>
+                                        <div className="col-12 md:col-4">
+                                        <label htmlFor="cinDateValidite">Date de validité</label>
+                                            <Calendar
+                                                id="cinDateValidite"
+                                                showIcon
+                                                showButtonBar
+                                                value={selectedCandidat?.cin?.date_validite ? new Date(selectedCandidat.cin.date_validite) : null}
+                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, cin: { ...prev.cin, date_validite: e.value } }))}
+                                                dateFormat="dd/mm/yy"
+                                            />
+                                        <label htmlFor="phoneNumber">Numero de telephone</label>
+                                            <InputText
+                                                id="phoneNumber"
+                                                type="text"
+                                                value={selectedCandidat?.num_tel || ''}
+                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, num_tel: e.target.value }))}
+                                            />
+                                            <br/><br/>
+
+                                            <label htmlFor="familySituation">Situation Familiale</label>
+                                            <InputText
+                                                id="familySituation"
+                                                type="text"
+                                                value={selectedCandidat?.situation_fam || ''}
+                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, situation_fam: e.target.value }))}
+                                            />
+                                            <br /><br />
+
+                                            <label htmlFor="numChildren">Nombre d'enfants</label>
+                                            <InputNumber
+                                                id="numChildren"
+                                                value={selectedCandidat?.children || 0}
+                                                onValueChange={(e) => setSelectedCandidat(prev => ({ ...prev, children: e.value }))}
+                                                showButtons
+                                                mode="decimal"
+                                                min={0}
+                                            />
+                                            <br /><br />
+
+                                            <label htmlFor="observation">Observation</label>
+                                            <InputText
+                                                id="observation"
+                                                type="text"
+                                                value={selectedCandidat?.obs || ''}
+                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, obs: e.target.value }))}
+                                            />
+                                            <br /><br />
+
+                                            <label htmlFor="tl">Test Linguistique</label>
+                                            <InputText
+                                                id="tl"
+                                                type="text"
+                                                value={selectedCandidat?.tl || ''}
+                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, tl: e.target.value }))}
+                                            />
+                                            <br /><br />
+
+                                            <label htmlFor="group">Groupe</label>
+                                            <InputText
+                                                id="group"
+                                                type="text"
+                                                value={selectedCandidat?.groupe || ''}
+                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, groupe: e.target.value }))}
+                                            />
+                                            
+                                        </div>
+                                        <div className="col-12 md:col-4" style={{ textAlign: 'center' }}>
+                                            <img
+                                                src={getImageUrl(selectedCandidat?.id)}
+                                                alt="Candidat"
+                                                style={{ width: '150px', height: 'auto' }}
+                                            />
+                                            <h5>Set Image</h5>
+                                            <FileUpload ref={fileUploadRef} mode="basic" name="demo[]" url="./upload.php" accept="image/*" maxFileSize={1000000} onUpload={handleFileUpload} />
+
+                                        </div>
+                                    </div>
+                                    <Button label="Update" className="p-button-warning" onClick={updateProfile} />
+                                    <Button label="Cancel" className="p-button-secondary" onClick={toggleModal} />
+
+                                </form>
+                            </div>
+                        </div>
+                    </Dialog>
                 </div>
             </div>
         </div>
