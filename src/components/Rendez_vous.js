@@ -115,7 +115,7 @@ const Rendez_vous = () =>{
       CandidatId: selectedCandidat.id, // Ajout de l'ID du candidat au payload
     };
 
-    const response = await axios.post(`http://localhost:8080/api/rendez_vous/Save/Candidat/${selectedCandidat.id}`, payload);
+    const response = await axios.post(`http://localhost:8080/api/rendez_vous/Save/${selectedCandidat.id}`, payload);
     
     console.log('Réponse du serveur:', response.data);
 

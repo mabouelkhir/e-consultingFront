@@ -23,8 +23,10 @@ export const CandidatActiveList = () => {
     const [displayDialog, setDisplayDialog] = useState(false);
     const [selectedCandidat, setSelectedCandidat] = useState(null);
     const [candidats, setCandidats] = useState([]);
-    const [filters1,setFilters1] = useState([]);
-   
+    const [filters1, setFilters1] = useState([]);
+    const [permisData, setPermisData] = useState([]);
+
+
 
     const toast = useRef(null);
     const fileUploadRef = useRef(null);
@@ -102,15 +104,29 @@ export const CandidatActiveList = () => {
         try {
             const response = await axios.get('http://localhost:8080/api/candidat/candidats/actifs');
             const candidatsData = response.data;
-            
-             // Filtrer les candidats correspondants à l'employeur sélectionné
-      
-           // Mettre à jour la liste des candidats affichés
-       setCandidats(candidatsData);
+
+            // Filtrer les candidats correspondants à l'employeur sélectionné
+
+            // Mettre à jour la liste des candidats affichés
+            setCandidats(candidatsData);
             console.log('candidatsData:', candidatsData);
-     
+
         } catch (error) {
             console.error('Error fetching candidats:', error);
+        }
+    };
+
+    const fetchPermisData = async (candidatID) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/permis/getByPermis/${candidatID}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            setPermisData(data);
+        } catch (error) {
+            console.error('Error fetching permis data:', error);
         }
     };
 
@@ -131,6 +147,10 @@ export const CandidatActiveList = () => {
     const dateFilterTemplate = (options) => {
         return <Calendar value={options.value} onChange={(e) => options.filterCallback(e.value, options.index)} dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" mask="99/99/9999" />
     }
+    const formatDate1 = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
 
     const initFilters1 = () => {
         setFilters1({
@@ -139,7 +159,7 @@ export const CandidatActiveList = () => {
             'email': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'createdAt': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
             'status': { value: null, matchMode: FilterMatchMode.EQUALS },
-            'ref_contrat': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }]}
+            'ref_contrat': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] }
         });
 
     }
@@ -233,6 +253,7 @@ export const CandidatActiveList = () => {
 
     const continueCandidat = async (candidat) => {
         setSelectedCandidat(candidat);
+        fetchPermisData(candidat.id);
         toggleModal(); // Show the modal
 
     }
@@ -376,7 +397,7 @@ export const CandidatActiveList = () => {
                         {/* Other columns you want to display */}
                     </DataTable>
                     <Toast ref={toast} />
-                    <Dialog style={{ width: '100%', maxWidth: '1200px' }} // Set the width and max-width
+                    <Dialog style={{ width: '100%', maxWidth: '1400px' }} // Set the width and max-width
                         className="p-dialog-center" // Center the dialog horizontally
                         visible={isModalVisible} onHide={toggleModal}>
                         <div className="col-12">
@@ -384,7 +405,7 @@ export const CandidatActiveList = () => {
                                 <h2>Completez le profil</h2>
                                 <form>
                                     <div className="grid p-fluid">
-                                        <div className="col-12 md:col-4">
+                                        <div className="col-12 md:col-3">
                                             <label htmlFor="firstName">Prenom</label>
                                             <InputText id="firstName"
                                                 value={selectedCandidat?.prenom || ''}
@@ -468,12 +489,12 @@ export const CandidatActiveList = () => {
                                             <InputText
                                                 id="contrat"
                                                 type="text"
-                                                value={selectedCandidat?.Ref_contrat || ''}
-                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, Ref_contrat: e.target.value }))}
+                                                value={selectedCandidat?.ref_contrat || ''}
+                                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, ref_contrat: e.target.value }))}
                                             />
 
                                         </div>
-                                        <div className="col-12 md:col-4">
+                                        <div className="col-12 md:col-3">
                                             <label htmlFor="cinDateValidite">Date de validité</label>
                                             <Calendar
                                                 id="cinDateValidite"
@@ -539,17 +560,7 @@ export const CandidatActiveList = () => {
                                             />
 
                                         </div>
-                                        <div className="col-12 md:col-4" >
-                                            <div style={{ textAlign: 'center' }}>
-                                                <img
-                                                    src={getImageUrl(selectedCandidat?.id)}
-                                                    alt="Candidat"
-                                                    style={{ width: '150px', height: 'auto' }}
-                                                />
-                                            
-                                            <h5>Set Image</h5>
-                                            <FileUpload ref={fileUploadRef} mode="basic" name="demo[]" url="./upload.php" accept="image/*" maxFileSize={1000000} onUpload={handleFileUpload} />
-                                            </div>
+                                        <div className='col-12 md:col-3'>
                                             <h5>Fonctions:</h5>
                                             {selectedCandidat?.fonctions.map((fonction) => (
                                                 <li key={fonction.id}>
@@ -568,6 +579,41 @@ export const CandidatActiveList = () => {
                                                     </ul>
                                                 </li>
                                             ))}
+
+                                            <h5>Permis:</h5>
+                                            {permisData.length > 0 && (
+                                                <div>
+                                                    <p><strong>Code:</strong> {permisData[0].permis.code}</p>
+                                                    <p><strong>Date de Validité:</strong> {new Date(permisData[0].permis.date_validite).toLocaleDateString()}</p>
+                                                    <p><strong>Categories de Permis:</strong></p>
+                                                </div>
+                                            )}
+
+                                            <ul>
+                                                {permisData.map((item) => (
+                                                    <li key={item.id}>
+                                                        <div>
+                                                            <strong>Categorie:</strong> {item.categorie}
+                                                        </div>
+                                                        <div>
+                                                            <strong>Date de Delivrance:</strong> {new Date(item.date_delivrance).toLocaleDateString()}
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        <div className="col-12 md:col-3" >
+                                            <div style={{ textAlign: 'center' }}>
+                                                <img
+                                                    src={getImageUrl(selectedCandidat?.id)}
+                                                    alt="Candidat"
+                                                    style={{ width: '150px', height: 'auto' }}
+                                                />
+
+                                                <h5>Set Image</h5>
+                                                <FileUpload ref={fileUploadRef} mode="basic" name="demo[]" url="./upload.php" accept="image/*" maxFileSize={1000000} onUpload={handleFileUpload} />
+                                            </div>
+
                                         </div>
                                     </div>
                                     <Button label="Update" className="p-button-warning" onClick={updateProfile} />
@@ -668,9 +714,9 @@ export const CandidatActiveList = () => {
                     </Dialog>
                 </div>
             </div>
-            
-          
-        
+
+
+
         </div>
     );
 }
