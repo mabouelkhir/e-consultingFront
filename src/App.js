@@ -4,6 +4,8 @@ import { Route, useLocation } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 
 import { AppTopbar } from './AppTopbar';
+import { AppTopbar1 } from './AppTopbar1';
+
 import { AppFooter } from './AppFooter';
 import { AppMenu } from './AppMenu';
 import { AppConfig } from './AppConfig';
@@ -61,15 +63,6 @@ import RejoignezNous from './components/Rejoignez-nous';
 import LoginForm from './components/LoginForm';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-
-
-
-
-
-
-
-
-
 const App = () => {
     const [layoutMode, setLayoutMode] = useState('static');
     const [layoutColorMode, setLayoutColorMode] = useState('light')
@@ -79,6 +72,11 @@ const App = () => {
     const [overlayMenuActive, setOverlayMenuActive] = useState(false);
     const [mobileMenuActive, setMobileMenuActive] = useState(false);
     const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // New state for tracking login status
+    const onLogin = () => {
+        setIsLoggedIn(true); // Set the login status to true when the user logs in
+    }
+
     const copyTooltipRef = useRef();
     const location = useLocation();
 
@@ -184,7 +182,7 @@ const App = () => {
         {
             label: 'Home',
             items: [{
-                label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/'                
+                label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/home'                
             }]
         },
         {
@@ -236,10 +234,16 @@ const App = () => {
         <div>
         <Route path="/" exact render={() => <Redirect to="/homepage" />} />
         <Route path="/homepage" exact render={() => <Homepage />} />
-                 <Route path="/rejoignez-nous" component={RejoignezNous} />
-                 <Route path="/loginform" component={LoginForm}/>
-                
-    
+        <AppTopbar1 onToggleMenuClick={onToggleMenuClick} layoutColorMode={layoutColorMode}
+                mobileTopbarMenuActive={mobileTopbarMenuActive} onMobileTopbarMenuClick={onMobileTopbarMenuClick} onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick} />
+   
+        {!isLoggedIn ? ( // Conditional rendering based on login status
+<>
+        <Route path="/rejoignez-nous" component={RejoignezNous} />
+        <Route path="/loginform" render={() => <LoginForm onLogin={onLogin} />} /> {/* Pass onLogin callback to LoginForm */}
+        </>
+                    ) : (
+
         <div className={wrapperClass} onClick={onWrapperClick}>
        
             <Tooltip ref={copyTooltipRef} target=".block-action-copy" position="bottom" content="Copied to clipboard" event="focus" />
@@ -252,10 +256,8 @@ const App = () => {
             </div>
 
             <div className="layout-main-container">
-        
                 <div className="layout-main">
-
-                    <Route path="/" exact render={() => <Dashboard colorMode={layoutColorMode} location={location} />} />
+                    <Route path="/home" exact render={() => <Dashboard colorMode={layoutColorMode} location={location} />} />
                     <Route path="/formlayout" component={FormLayoutDemo} />
                     <Route path="/input" component={InputDemo} />
                     <Route path="/floatlabel" component={FloatLabelDemo} />
@@ -264,7 +266,6 @@ const App = () => {
                     <Route path="/fonctions" component={Fonctions} />
                     <Route path="/id_pieces" component={Identity_piece} />
                     <Route path={'/dossiers'} component={Dossier} />
-
                     <Route path="/table" component={TableDemo} />
                     <Route path="/list" component={ListDemo} />
                     <Route path="/tree" component={TreeDemo} />
@@ -277,10 +278,6 @@ const App = () => {
                     <Route path="/employeur" component={Employeur} />
                     <Route path="/reglements" component={Reglement} />
                     <Route path="/rendez-vous" component={Rendez_vous} />
-
-
-                
-                    
                     <Route path="/users" component={AjouterUser} />
                     <Route path="/messages" component={MessagesDemo} />
                     <Route path="/blocks" component={BlocksDemo} />
@@ -293,21 +290,16 @@ const App = () => {
                     <Route path="/empty" component={EmptyPage} />
                     <Route path="/documentation" component={Documentation} />
                 </div>
-
                 <AppFooter layoutColorMode={layoutColorMode} />
             </div>
-
             <AppConfig rippleEffect={ripple} onRippleEffect={onRipple} inputStyle={inputStyle} onInputStyleChange={onInputStyleChange}
                 layoutMode={layoutMode} onLayoutModeChange={onLayoutModeChange} layoutColorMode={layoutColorMode} onColorModeChange={onColorModeChange} />
 
             <CSSTransition classNames="layout-mask" timeout={{ enter: 200, exit: 200 }} in={mobileMenuActive} unmountOnExit>
                 <div className="layout-mask p-component-overlay"></div>
             </CSSTransition>
-        
-
-            
-        
         </div>
+        )}
         </div>
     );
 

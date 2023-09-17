@@ -39,7 +39,7 @@ const Fonction = () => {
     };
 
     const fetchSubfonctions = () => {
-        fetch('http://localhost:8080/subfonctions')
+        fetch('http://localhost:8080/api/subfonctions')
             .then(response => response.json())
             .then(data => {
                 setSubfonctions(data);
@@ -218,7 +218,7 @@ const Fonction = () => {
     
     const ajouterSubFonction = async (fonctionId) => {
         try {
-            const response = await axios.post(`http://localhost:8080/subfonctions/${fonctionId}/add`, {
+            const response = await axios.post(`http://localhost:8080/api/subfonctions/${fonctionId}/add`, {
                 nomSubFonction: newSubFonctionName
             });
             console.log('Ajouter Subfonction response:', response.data);

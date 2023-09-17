@@ -18,15 +18,12 @@ const Homepage= () => {
    
 
    return (
-       <div className="grid grid-nogutter surface-section text-800 mt-8">
+       <div className="grid">
            <div className="col-12 md:col-6 p-6 text-center md:text-left flex align-items-center">
                <section>
                    <span className="block text-6xl font-bold mb-1">Créez votre Avenir</span>
                    <div className="flex items-center justify-center text-6xl text-primary font-bold mb-3">avec nous</div>
 
-                   
-
-                  
                    <Link to="/rejoignez-nous">
                    <Button label="Rejoignez-nous" type="button" className="mr-3 p-button-raised" />
                    </Link>
