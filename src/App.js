@@ -26,7 +26,7 @@ import Employeur from './components/Employeur';
 import AjouterUser from './components/AjouterUser';
 import Reglement from './components/Reglement';
 import Rendez_vous from './components/Rendez_vous';
-
+import EmployeurPage from './components/EmployeurPage';
 import MessagesDemo from './components/MessagesDemo';
 import MiscDemo from './components/MiscDemo';
 import OverlayDemo from './components/OverlayDemo';
@@ -39,7 +39,7 @@ import BlocksDemo from './components/BlocksDemo';
 import IconsDemo from './components/IconsDemo';
 import Fonctions from './components/Fonctions'
 import Identity_piece from './components/Identity_piece'
-import  Dossier  from './components/Dossier';
+import Dossier from './components/Dossier';
 
 
 import Crud from './pages/Crud';
@@ -59,7 +59,7 @@ import './assets/layout/layout.scss';
 import './App.scss';
 import { Redirect } from 'react-router-dom';
 import Homepage from './components/Homepage';
-import RejoignezNous from './components/Rejoignez-nous'; 
+import RejoignezNous from './components/Rejoignez-nous';
 import LoginForm from './components/LoginForm';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -73,7 +73,10 @@ const App = () => {
     const [mobileMenuActive, setMobileMenuActive] = useState(false);
     const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false); // New state for tracking login status
-    const onLogin = () => {
+    const [user, setUser] = useState(null); // Store the user object
+
+    const onLogin = (userData) => {
+        setUser(userData); // Set the user object when the user logs in
         setIsLoggedIn(true); // Set the login status to true when the user logs in
     }
 
@@ -179,30 +182,47 @@ const App = () => {
     }
 
     const menu = [
+        
+
+
+    ];
+    // Add menu items based on the user's role
+if (user && user.role === "Admin") {
+    menu.push(
         {
             label: 'Home',
             items: [{
-                label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/home'                
+                label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/admin/home'
             }]
         },
         {
             label: 'Gestion', icon: 'pi pi-fw pi-sitemap',
             items: [
-                { label: 'Gestion des Utilisateurs', icon: 'pi pi-fw pi-id-card', to: '/users'},
-                { label: 'Gestion des Candidats', icon: 'pi pi-fw pi-id-card', to: '/candidats'},
-                { label: 'Gestion des Employeurs', icon: 'pi pi-fw pi-id-card', to: '/employeur'},
-                { label: 'Gestion des Fonctions', icon: 'pi pi-fw pi-id-card', to: '/fonctions'},
-                { label: 'Gestion des Dossiers', icon: 'pi pi-fw pi-id-card', to: '/dossiers'},
-                { label: 'Gestion des Agents', icon: 'pi pi-fw pi-id-card', to: '/agents'},
-                { label: 'Gestion des Reglements', icon: 'pi pi-fw pi-id-card', to: '/reglements'},
-                { label: 'Gestion des piece des identité', icon: 'pi pi-fw pi-id-card', to: '/id_pieces'},
-                { label: 'Gestion des Rendez-vous', icon: 'pi pi-fw pi-id-card', to: '/rendez-vous'},
-                
+                { label: 'Gestion des Utilisateurs', icon: 'pi pi-fw pi-id-card', to: '/admin/users' },
+                { label: 'Gestion des Candidats', icon: 'pi pi-fw pi-id-card', to: '/admin/candidats' },
+                { label: 'Gestion des Employeurs', icon: 'pi pi-fw pi-id-card', to: '/admin/employeur' },
+                { label: 'Gestion des Fonctions', icon: 'pi pi-fw pi-id-card', to: '/admin/fonctions' },
+                { label: 'Gestion des Dossiers', icon: 'pi pi-fw pi-id-card', to: '/admin/dossiers' },
+                { label: 'Gestion des Agents', icon: 'pi pi-fw pi-id-card', to: '/admin/agents' },
+                { label: 'Gestion des Reglements', icon: 'pi pi-fw pi-id-card', to: '/admin/reglements' },
+                { label: 'Gestion des piece des identité', icon: 'pi pi-fw pi-id-card', to: '/admin/id_pieces' },
+                { label: 'Gestion des Rendez-vous', icon: 'pi pi-fw pi-id-card', to: '/admin/rendez-vous' },
+
             ]
         },
-        
-        
-    ];
+    );
+} else if (user && user.role === "Employeur") {
+    menu.push(
+        {
+            label: 'Gestion',
+            items: [{
+                label: 'Employeur page', icon: 'pi pi-fw pi-id-card', to: '/employeur/home'
+            }]
+        },
+
+
+    );
+}
 
     const addClass = (element, className) => {
         if (element.classList)
@@ -230,78 +250,119 @@ const App = () => {
     });
 
     return (
-       
         <div>
-        <Route path="/" exact render={() => <Redirect to="/homepage" />} />
-        <Route path="/homepage" exact render={() => <Homepage />} />
-        <AppTopbar1 onToggleMenuClick={onToggleMenuClick} layoutColorMode={layoutColorMode}
-                mobileTopbarMenuActive={mobileTopbarMenuActive} onMobileTopbarMenuClick={onMobileTopbarMenuClick} onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick} />
-   
-        {!isLoggedIn ? ( // Conditional rendering based on login status
-<>
-        <Route path="/rejoignez-nous" component={RejoignezNous} />
-        <Route path="/loginform" render={() => <LoginForm onLogin={onLogin} />} /> {/* Pass onLogin callback to LoginForm */}
-        </>
-                    ) : (
+            <Route path="/" exact render={() => <Redirect to="/homepage" />} />
+            <Route path="/homepage" exact render={() => <Homepage />} />
+            <AppTopbar1
+                onToggleMenuClick={onToggleMenuClick}
+                layoutColorMode={layoutColorMode}
+                mobileTopbarMenuActive={mobileTopbarMenuActive}
+                onMobileTopbarMenuClick={onMobileTopbarMenuClick}
+                onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick}
+            />
 
-        <div className={wrapperClass} onClick={onWrapperClick}>
-       
-            <Tooltip ref={copyTooltipRef} target=".block-action-copy" position="bottom" content="Copied to clipboard" event="focus" />
-           
-            <AppTopbar onToggleMenuClick={onToggleMenuClick} layoutColorMode={layoutColorMode}
-                mobileTopbarMenuActive={mobileTopbarMenuActive} onMobileTopbarMenuClick={onMobileTopbarMenuClick} onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick} />
-   
-            <div className="layout-sidebar" onClick={onSidebarClick}>
-                <AppMenu model={menu} onMenuItemClick={onMenuItemClick} layoutColorMode={layoutColorMode} />
-            </div>
+            {!isLoggedIn ? (
+                <>
+                    <Route path="/rejoignez-nous" component={RejoignezNous} />
+                    <Route path="/loginform" render={() => <LoginForm onLogin={onLogin} />} />
+                </>
+            ) : (
+                <div className={wrapperClass} onClick={onWrapperClick}>
+                    <Tooltip
+                        ref={copyTooltipRef}
+                        target=".block-action-copy"
+                        position="bottom"
+                        content="Copied to clipboard"
+                        event="focus"
+                    />
 
-            <div className="layout-main-container">
-                <div className="layout-main">
-                    <Route path="/home" exact render={() => <Dashboard colorMode={layoutColorMode} location={location} />} />
-                    <Route path="/formlayout" component={FormLayoutDemo} />
-                    <Route path="/input" component={InputDemo} />
-                    <Route path="/floatlabel" component={FloatLabelDemo} />
-                    <Route path="/invalidstate" component={InvalidStateDemo} />
-                    <Route path="/button" component={ButtonDemo} />
-                    <Route path="/fonctions" component={Fonctions} />
-                    <Route path="/id_pieces" component={Identity_piece} />
-                    <Route path={'/dossiers'} component={Dossier} />
-                    <Route path="/table" component={TableDemo} />
-                    <Route path="/list" component={ListDemo} />
-                    <Route path="/tree" component={TreeDemo} />
-                    <Route path="/panel" component={PanelDemo} />
-                    <Route path="/overlay" component={OverlayDemo} />
-                    <Route path="/media" component={MediaDemo} />
-                    <Route path="/menu" component={MenuDemo} />
-                    <Route path="/candidats" component={Candidats} />
-                    <Route path="/agents" component={Agents} />
-                    <Route path="/employeur" component={Employeur} />
-                    <Route path="/reglements" component={Reglement} />
-                    <Route path="/rendez-vous" component={Rendez_vous} />
-                    <Route path="/users" component={AjouterUser} />
-                    <Route path="/messages" component={MessagesDemo} />
-                    <Route path="/blocks" component={BlocksDemo} />
-                    <Route path="/icons" component={IconsDemo} />
-                    <Route path="/file" component={FileDemo} />
-                    <Route path="/chart" render={() => <ChartDemo colorMode={layoutColorMode} location={location} />} />
-                    <Route path="/misc" component={MiscDemo} />
-                    <Route path="/timeline" component={TimelineDemo} />
-                    <Route path="/crud" component={Crud} />
-                    <Route path="/empty" component={EmptyPage} />
-                    <Route path="/documentation" component={Documentation} />
+                    <AppTopbar
+                        onToggleMenuClick={onToggleMenuClick}
+                        layoutColorMode={layoutColorMode}
+                        mobileTopbarMenuActive={mobileTopbarMenuActive}
+                        onMobileTopbarMenuClick={onMobileTopbarMenuClick}
+                        onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick}
+                    />
+
+                    <div className="layout-sidebar" onClick={onSidebarClick}>
+                        <AppMenu model={menu} onMenuItemClick={onMenuItemClick} layoutColorMode={layoutColorMode} />
+                    </div>
+
+                    <div className="layout-main-container">
+                        <div className="layout-main">
+                            {user && (
+                                <>
+                                    {user.role === "Admin" && (
+                                        <>
+                                            <Route
+                                                path="/admin/home"
+                                                exact
+                                                render={() => <Dashboard colorMode={layoutColorMode} location={location} />}
+                                            />
+                                            <Route path="/admin/formlayout" component={FormLayoutDemo} />
+                                            <Route path="/admin/input" component={InputDemo} />
+                                            <Route path="/admin/floatlabel" component={FloatLabelDemo} />
+                                            <Route path="/admin/invalidstate" component={InvalidStateDemo} />
+                                            <Route path="/admin/button" component={ButtonDemo} />
+                                            <Route path="/admin/fonctions" component={Fonctions} />
+                                            <Route path="/admin/id_pieces" component={Identity_piece} />
+                                            <Route path={'/admin/dossiers'} component={Dossier} />
+                                            <Route path="/admin/table" component={TableDemo} />
+                                            <Route path="/admin/list" component={ListDemo} />
+                                            <Route path="/admin/tree" component={TreeDemo} />
+                                            <Route path="/admin/panel" component={PanelDemo} />
+                                            <Route path="/admin/overlay" component={OverlayDemo} />
+                                            <Route path="/admin/media" component={MediaDemo} />
+                                            <Route path="/admin/menu" component={MenuDemo} />
+                                            <Route path="/admin/candidats" component={Candidats} />
+                                            <Route path="/admin/agents" component={Agents} />
+                                            <Route path="/admin/employeur" component={Employeur} />
+                                            <Route path="/admin/reglements" component={Reglement} />
+                                            <Route path="/admin/rendez-vous" component={Rendez_vous} />
+                                            <Route path="/admin/users" component={AjouterUser} />
+                                            <Route path="/admin/messages" component={MessagesDemo} />
+                                            <Route path="/admin/blocks" component={BlocksDemo} />
+                                            <Route path="/admin/icons" component={IconsDemo} />
+                                            <Route path="/admin/file" component={FileDemo} />
+                                            <Route path="/admin/chart" render={() => <ChartDemo colorMode={layoutColorMode} location={location} />} />
+                                            <Route path="/admin/misc" component={MiscDemo} />
+                                            <Route path="/admin/timeline" component={TimelineDemo} />
+                                            <Route path="/admin/crud" component={Crud} />
+                                            <Route path="/admin/empty" component={EmptyPage} />
+                                            <Route path="/admin/documentation" component={Documentation} />
+
+                                        </>
+                                    )}
+                                    {user.role === "Employeur" && (
+                                        <>
+                                            <Route path="/employeur/home" component={EmployeurPage} />
+                                            {/* Add other employeur-related routes */}
+                                        </>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                        <AppFooter layoutColorMode={layoutColorMode} />
+                    </div>
+                    <AppConfig
+                        rippleEffect={ripple}
+                        onRippleEffect={onRipple}
+                        inputStyle={inputStyle}
+                        onInputStyleChange={onInputStyleChange}
+                        layoutMode={layoutMode}
+                        onLayoutModeChange={onLayoutModeChange}
+                        layoutColorMode={layoutColorMode}
+                        onColorModeChange={onColorModeChange}
+                    />
+
+                    <CSSTransition classNames="layout-mask" timeout={{ enter: 200, exit: 200 }} in={mobileMenuActive} unmountOnExit>
+                        <div className="layout-mask p-component-overlay"></div>
+                    </CSSTransition>
                 </div>
-                <AppFooter layoutColorMode={layoutColorMode} />
-            </div>
-            <AppConfig rippleEffect={ripple} onRippleEffect={onRipple} inputStyle={inputStyle} onInputStyleChange={onInputStyleChange}
-                layoutMode={layoutMode} onLayoutModeChange={onLayoutModeChange} layoutColorMode={layoutColorMode} onColorModeChange={onColorModeChange} />
-
-            <CSSTransition classNames="layout-mask" timeout={{ enter: 200, exit: 200 }} in={mobileMenuActive} unmountOnExit>
-                <div className="layout-mask p-component-overlay"></div>
-            </CSSTransition>
-        </div>
-        )}
+            )}
         </div>
     );
+
 
 }
 

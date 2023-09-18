@@ -2,24 +2,35 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
+import axios from "axios"; // Import Axios
 
 const LoginForm = ({ onLogin }) => {
     const history = useHistory();
-    
+
     // Define state variables for email and password
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     // Handle form submission
-    const handleSubmit = () => {
-        // You can add your login logic here, e.g., making an API call
-        // Assuming the login is successful, you can call the onLogin callback
-        // and redirect to another page, like this:
-        if (email === "example@email.com" && password === "password") {
-            onLogin(); // Call the onLogin callback to update the login status
-            history.push("/home"); // Redirect to the desired page (e.g., homepage)
-        } else {
+    const handleSubmit = async () => {
+        try {
+            const response = await axios.post("http://localhost:8080/api/auth/login", {
+                email: email,
+                password: password,
+            });
+
+            // Assuming the login is successful and the server returns user data
+            const userData = response.data;
+
+            // You can call the onLogin callback to update the login status
+            onLogin(userData);
+
+            // Redirect to the desired page (e.g., homepage)
+            history.push("/admin/home");
+        } catch (error) {
             // Handle login failure, e.g., show an error message
+            console.error("Login error:", error);
+            // You can display an error message to the user here
         }
     };
 
