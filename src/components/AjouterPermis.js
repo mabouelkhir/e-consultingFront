@@ -372,7 +372,7 @@ export const AjouterPermis = () => {
             </div>
             <div className="col-12">
                 <div className="card">
-                    <h5>Listd des permis</h5>
+                    <h5>Liste des permis</h5>
                     <DataTable
                         value={permis}
                         paginator

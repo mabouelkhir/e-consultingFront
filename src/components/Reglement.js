@@ -164,7 +164,7 @@ const Reglement = () => {
     const operationBodyTemplate = (rowData) => {
         return (
             <div>
-              edit
+              <Button label="Modifier" className="p-button-rounded p-button-danger" onClick={() => editedReglementId(rowData.id)} />
                 <Button label="Supprimer" className="p-button-rounded p-button-danger" onClick={() => deleteReglement(rowData.id)} />
 
             </div>

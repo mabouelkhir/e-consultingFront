@@ -17,6 +17,7 @@ const ListdesEmployeurs = () => {
     const [employeur, setEmployeur] = useState([]);
     const [filters1, setFilters1] = useState(null);
     const [selectedEmployeur,setSelectedEmployeur] = useState(null);
+    const [prestations, setPrestations] = useState([]); // État pour stocker les prestations
   
    
     
@@ -159,6 +160,8 @@ const ListdesEmployeurs = () => {
     }, []);
     
     
+    
+ 
  
     const deleteEmployeur = async (employeurId) => {
         try {
@@ -271,7 +274,7 @@ const ListdesEmployeurs = () => {
                         <Column field="adresse" header="Adresse" filter filterPlaceholder="Search by adresse" style={{ minWidth: '12rem' }} />
                         <Column field="num_tel" header="Num_Tel" filter filterPlaceholder="Search by num_tel" style={{ minWidth: '12rem' }} />
                         <Column field="codeEmp" header="Code_Emp" filter filterPlaceholder="Search by code_emp" style={{ minWidth: '12rem' }} />
-                        <Column field="prestation" header="Prestation" filter filterPlaceholder="Search by prestation" style={{ minWidth: '12rem' }} />
+                       
                         <Column field="ref_contrat" header="Ref_contrat" filter filterPlaceholder="Search by ref_contrat" style={{ minWidth: '12rem' }} />
                         <Column header="Opération" body={operationBodyTemplate} style={{ minWidth: '10rem', textAlign: 'center' }} />
 

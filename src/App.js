@@ -23,7 +23,7 @@ import Agents from './components/Agents';
 import Employeur from './components/Employeur';
 import AjouterUser from './components/AjouterUser';
 import Reglement from './components/Reglement';
-import Rendez_vous from './components/Rendez_vous';
+
 
 import MessagesDemo from './components/MessagesDemo';
 import MiscDemo from './components/MiscDemo';
@@ -198,7 +198,7 @@ const App = () => {
                 { label: 'Gestion des Agents', icon: 'pi pi-fw pi-id-card', to: '/agents'},
                 { label: 'Gestion des Reglements', icon: 'pi pi-fw pi-id-card', to: '/reglements'},
                 { label: 'Gestion des piece des identité', icon: 'pi pi-fw pi-id-card', to: '/id_pieces'},
-                { label: 'Gestion des Rendez-vous', icon: 'pi pi-fw pi-id-card', to: '/rendez-vous'},
+                
                 
             ]
         },
@@ -276,7 +276,7 @@ const App = () => {
                     <Route path="/agents" component={Agents} />
                     <Route path="/employeur" component={Employeur} />
                     <Route path="/reglements" component={Reglement} />
-                    <Route path="/rendez-vous" component={Rendez_vous} />
+                    
 
 
                 
