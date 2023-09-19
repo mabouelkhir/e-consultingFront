@@ -14,13 +14,13 @@ const Candidats = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const history = useHistory();
         const wizardItems = [
-        { label: 'List des Candidats', command: () => history.push('/candidats') },
-        { label: 'liste des candidats actifs', command: () => history.push('/candidats/actifs') },
-        { label: 'Completer le profil', command: () => history.push('/candidats/profil') },
-        { label: 'Ajouter Fonctions', command: () => history.push('/candidats/fonctions') },
-        { label: 'Ajouter Permis', command: () => history.push('/candidats/permis') },
-        { label: 'Ajouter Passport', command: () => history.push('/candidats/passport') },
-        { label:'Gestion des entretiens', command: () =>history.push('/candidats/entretiens')}
+        { label: 'List des Candidats', command: () => history.push('/admin/candidats') },
+        { label: 'liste des candidats actifs', command: () => history.push('/admin/candidats/actifs') },
+        { label: 'Completer le profil', command: () => history.push('/admin/candidats/profil') },
+        { label: 'Ajouter Fonctions', command: () => history.push('/admin/candidats/fonctions') },
+        { label: 'Ajouter Permis', command: () => history.push('/admin/candidats/permis') },
+        { label: 'Ajouter Passport', command: () => history.push('/admin/candidats/passport') },
+        { label:'Gestion des entretiens', command: () =>history.push('/admin/candidats/entretiens')}
         
         
     ];
@@ -35,13 +35,13 @@ const Candidats = () => {
                 <div className="card card-w-title">
                     <h5>Gestion des Candidats</h5>
                     <TabMenu model={wizardItems} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)} />
-                    <Route exact path={'/candidats'} component={CandidatList} />
-                    <Route exact path={'/candidats/actifs'} component={CandidatActiveList} />
-                    <Route exact path={'/candidats/profil'} component={CompleterProfil} />
-                    <Route path={'/candidats/fonctions'} component={FonctionCandidat} />
-                    <Route path={'/candidats/permis'} component={AjouterPermis} />
-                    <Route path={'/candidats/passport'} component={AjouterPassport} />
-                    <Route exact path={'/candidats/entretiens'} component={Gestiondesentretiens}/>
+                    <Route exact path={'/admin/candidats'} component={CandidatList} />
+                    <Route exact path={'/admin/candidats/actifs'} component={CandidatActiveList} />
+                    <Route exact path={'/admin/candidats/profil'} component={CompleterProfil} />
+                    <Route path={'/admin/candidats/fonctions'} component={FonctionCandidat} />
+                    <Route path={'/admin/candidats/permis'} component={AjouterPermis} />
+                    <Route path={'/admin/candidats/passport'} component={AjouterPassport} />
+                    <Route exact path={'/admin/candidats/entretiens'} component={Gestiondesentretiens}/>
                     
                 </div>
             </div>

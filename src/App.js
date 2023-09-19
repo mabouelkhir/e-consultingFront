@@ -4,6 +4,8 @@ import { Route, useLocation } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 
 import { AppTopbar } from './AppTopbar';
+import { AppTopbar1 } from './AppTopbar1';
+
 import { AppFooter } from './AppFooter';
 import { AppMenu } from './AppMenu';
 import { AppConfig } from './AppConfig';
@@ -23,8 +25,7 @@ import Agents from './components/Agents';
 import Employeur from './components/Employeur';
 import AjouterUser from './components/AjouterUser';
 import Reglement from './components/Reglement';
-
-
+import EmployeurPage from './components/EmployeurPage';
 import MessagesDemo from './components/MessagesDemo';
 import MiscDemo from './components/MiscDemo';
 import OverlayDemo from './components/OverlayDemo';
@@ -37,16 +38,12 @@ import BlocksDemo from './components/BlocksDemo';
 import IconsDemo from './components/IconsDemo';
 import Fonctions from './components/Fonctions'
 import Identity_piece from './components/Identity_piece'
-import  Dossier  from './components/Dossier';
-
-
+import Dossier from './components/Dossier';
 import Crud from './pages/Crud';
 import EmptyPage from './pages/EmptyPage';
 import TimelineDemo from './pages/TimelineDemo';
-
 import PrimeReact from 'primereact/api';
 import { Tooltip } from 'primereact/tooltip';
-
 import 'primereact/resources/primereact.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
@@ -57,18 +54,9 @@ import './assets/layout/layout.scss';
 import './App.scss';
 import { Redirect } from 'react-router-dom';
 import Homepage from './components/Homepage';
-import RejoignezNous from './components/Rejoignez-nous'; 
+import RejoignezNous from './components/Rejoignez-nous';
 import LoginForm from './components/LoginForm';
 import { BrowserRouter as Router } from 'react-router-dom';
-
-
-
-
-
-
-
-
-
 
 const App = () => {
     const [layoutMode, setLayoutMode] = useState('static');
@@ -79,6 +67,14 @@ const App = () => {
     const [overlayMenuActive, setOverlayMenuActive] = useState(false);
     const [mobileMenuActive, setMobileMenuActive] = useState(false);
     const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // New state for tracking login status
+    const [user, setUser] = useState(null); // Store the user object
+
+    const onLogin = (userData) => {
+        setUser(userData); // Set the user object when the user logs in
+        setIsLoggedIn(true); // Set the login status to true when the user logs in
+    }
+
     const copyTooltipRef = useRef();
     const location = useLocation();
 
@@ -181,10 +177,17 @@ const App = () => {
     }
 
     const menu = [
+        
+
+
+    ];
+    // Add menu items based on the user's role
+if (user && user.role === "Admin") {
+    menu.push(
         {
             label: 'Home',
             items: [{
-                label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/'                
+                label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/admin/home'
             }]
         },
         {
@@ -202,9 +205,19 @@ const App = () => {
                 
             ]
         },
-        
-        
-    ];
+    );
+} else if (user && user.role === "Employeur") {
+    menu.push(
+        {
+            label: 'Gestion',
+            items: [{
+                label: 'Employeur page', icon: 'pi pi-fw pi-id-card', to: '/employeur/home'
+            }]
+        },
+
+
+    );
+}
 
     const addClass = (element, className) => {
         if (element.classList)
@@ -232,38 +245,39 @@ const App = () => {
     });
 
     return (
-       
         <div>
-        <Route path="/" exact render={() => <Redirect to="/homepage" />} />
-        <Route path="/homepage" exact render={() => <Homepage />} />
-                 <Route path="/rejoignez-nous" component={RejoignezNous} />
-                 <Route path="/loginform" component={LoginForm}/>
-                
-    
-        <div className={wrapperClass} onClick={onWrapperClick}>
-       
-            <Tooltip ref={copyTooltipRef} target=".block-action-copy" position="bottom" content="Copied to clipboard" event="focus" />
-           
-            <AppTopbar onToggleMenuClick={onToggleMenuClick} layoutColorMode={layoutColorMode}
-                mobileTopbarMenuActive={mobileTopbarMenuActive} onMobileTopbarMenuClick={onMobileTopbarMenuClick} onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick} />
-   
-            <div className="layout-sidebar" onClick={onSidebarClick}>
-                <AppMenu model={menu} onMenuItemClick={onMenuItemClick} layoutColorMode={layoutColorMode} />
-            </div>
+            <Route path="/" exact render={() => <Redirect to="/homepage" />} />
+            <Route path="/homepage" exact render={() => <Homepage />} />
+            <AppTopbar1
+                onToggleMenuClick={onToggleMenuClick}
+                layoutColorMode={layoutColorMode}
+                mobileTopbarMenuActive={mobileTopbarMenuActive}
+                onMobileTopbarMenuClick={onMobileTopbarMenuClick}
+                onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick}
+            />
 
-            <div className="layout-main-container">
-        
-                <div className="layout-main">
+            {!isLoggedIn ? (
+                <>
+                    <Route path="/rejoignez-nous" component={RejoignezNous} />
+                    <Route path="/loginform" render={() => <LoginForm onLogin={onLogin} />} />
+                </>
+            ) : (
+                <div className={wrapperClass} onClick={onWrapperClick}>
+                    <Tooltip
+                        ref={copyTooltipRef}
+                        target=".block-action-copy"
+                        position="bottom"
+                        content="Copied to clipboard"
+                        event="focus"
+                    />
 
-                    <Route path="/" exact render={() => <Dashboard colorMode={layoutColorMode} location={location} />} />
-                    <Route path="/formlayout" component={FormLayoutDemo} />
-                    <Route path="/input" component={InputDemo} />
-                    <Route path="/floatlabel" component={FloatLabelDemo} />
-                    <Route path="/invalidstate" component={InvalidStateDemo} />
-                    <Route path="/button" component={ButtonDemo} />
-                    <Route path="/fonctions" component={Fonctions} />
-                    <Route path="/id_pieces" component={Identity_piece} />
-                    <Route path={'/dossiers'} component={Dossier} />
+                    <AppTopbar
+                        onToggleMenuClick={onToggleMenuClick}
+                        layoutColorMode={layoutColorMode}
+                        mobileTopbarMenuActive={mobileTopbarMenuActive}
+                        onMobileTopbarMenuClick={onMobileTopbarMenuClick}
+                        onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick}
+                    />
 
                     <Route path="/table" component={TableDemo} />
                     <Route path="/list" component={ListDemo} />
@@ -278,38 +292,81 @@ const App = () => {
                     <Route path="/reglements" component={Reglement} />
                     
 
+                    <div className="layout-main-container">
+                        <div className="layout-main">
+                            {user && (
+                                <>
+                                    {user.role === "Admin" && (
+                                        <>
+                                            <Route
+                                                path="/admin/home"
+                                                exact
+                                                render={() => <Dashboard colorMode={layoutColorMode} location={location} />}
+                                            />
+                                            <Route path="/admin/formlayout" component={FormLayoutDemo} />
+                                            <Route path="/admin/input" component={InputDemo} />
+                                            <Route path="/admin/floatlabel" component={FloatLabelDemo} />
+                                            <Route path="/admin/invalidstate" component={InvalidStateDemo} />
+                                            <Route path="/admin/button" component={ButtonDemo} />
+                                            <Route path="/admin/fonctions" component={Fonctions} />
+                                            <Route path="/admin/id_pieces" component={Identity_piece} />
+                                            <Route path={'/admin/dossiers'} component={Dossier} />
+                                            <Route path="/admin/table" component={TableDemo} />
+                                            <Route path="/admin/list" component={ListDemo} />
+                                            <Route path="/admin/tree" component={TreeDemo} />
+                                            <Route path="/admin/panel" component={PanelDemo} />
+                                            <Route path="/admin/overlay" component={OverlayDemo} />
+                                            <Route path="/admin/media" component={MediaDemo} />
+                                            <Route path="/admin/menu" component={MenuDemo} />
+                                            <Route path="/admin/candidats" component={Candidats} />
+                                            <Route path="/admin/agents" component={Agents} />
+                                            <Route path="/admin/employeur" component={Employeur} />
+                                            <Route path="/admin/reglements" component={Reglement} />
+                                         
+                                            <Route path="/admin/users" component={AjouterUser} />
+                                            <Route path="/admin/messages" component={MessagesDemo} />
+                                            <Route path="/admin/blocks" component={BlocksDemo} />
+                                            <Route path="/admin/icons" component={IconsDemo} />
+                                            <Route path="/admin/file" component={FileDemo} />
+                                            <Route path="/admin/chart" render={() => <ChartDemo colorMode={layoutColorMode} location={location} />} />
+                                            <Route path="/admin/misc" component={MiscDemo} />
+                                            <Route path="/admin/timeline" component={TimelineDemo} />
+                                            <Route path="/admin/crud" component={Crud} />
+                                            <Route path="/admin/empty" component={EmptyPage} />
+                                            <Route path="/admin/documentation" component={Documentation} />
 
-                
-                    
-                    <Route path="/users" component={AjouterUser} />
-                    <Route path="/messages" component={MessagesDemo} />
-                    <Route path="/blocks" component={BlocksDemo} />
-                    <Route path="/icons" component={IconsDemo} />
-                    <Route path="/file" component={FileDemo} />
-                    <Route path="/chart" render={() => <ChartDemo colorMode={layoutColorMode} location={location} />} />
-                    <Route path="/misc" component={MiscDemo} />
-                    <Route path="/timeline" component={TimelineDemo} />
-                    <Route path="/crud" component={Crud} />
-                    <Route path="/empty" component={EmptyPage} />
-                    <Route path="/documentation" component={Documentation} />
+                                        </>
+                                    )}
+                                    {user.role === "Employeur" && (
+                                        <>
+                                            <Route path="/employeur/home" component={EmployeurPage} />
+                                            {/* Add other employeur-related routes */}
+                                        </>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                        <AppFooter layoutColorMode={layoutColorMode} />
+                    </div>
+                    <AppConfig
+                        rippleEffect={ripple}
+                        onRippleEffect={onRipple}
+                        inputStyle={inputStyle}
+                        onInputStyleChange={onInputStyleChange}
+                        layoutMode={layoutMode}
+                        onLayoutModeChange={onLayoutModeChange}
+                        layoutColorMode={layoutColorMode}
+                        onColorModeChange={onColorModeChange}
+                    />
+
+                    <CSSTransition classNames="layout-mask" timeout={{ enter: 200, exit: 200 }} in={mobileMenuActive} unmountOnExit>
+                        <div className="layout-mask p-component-overlay"></div>
+                    </CSSTransition>
                 </div>
-
-                <AppFooter layoutColorMode={layoutColorMode} />
-            </div>
-
-            <AppConfig rippleEffect={ripple} onRippleEffect={onRipple} inputStyle={inputStyle} onInputStyleChange={onInputStyleChange}
-                layoutMode={layoutMode} onLayoutModeChange={onLayoutModeChange} layoutColorMode={layoutColorMode} onColorModeChange={onColorModeChange} />
-
-            <CSSTransition classNames="layout-mask" timeout={{ enter: 200, exit: 200 }} in={mobileMenuActive} unmountOnExit>
-                <div className="layout-mask p-component-overlay"></div>
-            </CSSTransition>
-        
-
-            
-        
-        </div>
+            )}
         </div>
     );
+
 
 }
 

@@ -59,7 +59,7 @@ export const CompleterProfil = () => {
                 };
 
                 // Make a POST request to create the new cin object
-                const newCinResponse = await axios.post(`http://localhost:8080/cins/${selectedCandidat.id}`, newCinData);
+                const newCinResponse = await axios.post(`http://localhost:8080/api/cins/${selectedCandidat.id}`, newCinData);
                 console.log('New CIN data created successfully:', newCinResponse.data);
 
                 // Assign the newly created cin object to the selected candidate
@@ -81,7 +81,7 @@ export const CompleterProfil = () => {
 
                 };
 
-                const cinUpdateResponse = await axios.put(`http://localhost:8080/cins/${selectedCandidat.cin.id}`, cinUpdateData);
+                const cinUpdateResponse = await axios.put(`http://localhost:8080/api/cins/${selectedCandidat.cin.id}`, cinUpdateData);
                 console.log('CIN data updated successfully:', cinUpdateResponse.data);
             }
             // Update candidate's profile picture
@@ -223,6 +223,14 @@ export const CompleterProfil = () => {
                                 value={selectedCandidat?.cin?.date_naissance ? new Date(selectedCandidat.cin.date_naissance) : null}
                                 onChange={(e) => setSelectedCandidat(prev => ({ ...prev, cin: { ...prev.cin, date_naissance: e.value } }))}
                                 dateFormat="dd/mm/yy"
+                            />
+
+                            <h5>Réference Contrat</h5>
+                            <InputText
+                                id="contrat"
+                                type="text"
+                                value={selectedCandidat?.ref_contrat || ''}
+                                onChange={(e) => setSelectedCandidat(prev => ({ ...prev, ref_contrat: e.target.value }))}
                             />
                         </div>
                         <div className="col-12 md:col-4">

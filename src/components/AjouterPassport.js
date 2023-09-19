@@ -68,7 +68,7 @@ const [selectedPassportForEdit, setSelectedPassportForEdit] = useState(null);
 
     const fetchPassports = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/passports/all');
+            const response = await axios.get('http://localhost:8080/api/passports/all');
             setPassports(response.data);
         } catch (error) {
             console.error('Error fetching passports:', error);
@@ -121,7 +121,7 @@ const [selectedPassportForEdit, setSelectedPassportForEdit] = useState(null);
                     date_validite,
                 };
     
-                const response = await axios.put(`http://localhost:8080/passports/${selectedPassportForEdit.id}/update`, payload);
+                const response = await axios.put(`http://localhost:8080/api/passports/${selectedPassportForEdit.id}/update`, payload);
     
                 console.log('Passport updated successfully:', response.data);
     
@@ -152,7 +152,7 @@ const [selectedPassportForEdit, setSelectedPassportForEdit] = useState(null);
     const actionsBodyTemplate = (rowData) => {
         const handleDelete = async () => {
             try {
-                const response = await axios.delete(`http://localhost:8080/passports/${rowData.id}/delete`);
+                const response = await axios.delete(`http://localhost:8080/api/passports/${rowData.id}/delete`);
     
                 console.log('Passport deleted successfully:', response.data);
     
@@ -200,7 +200,7 @@ const [selectedPassportForEdit, setSelectedPassportForEdit] = useState(null);
                     date_validite,
                 };
     
-                const response = await axios.post(`http://localhost:8080/passports/${selectedCandidate.id}/create`, payload);
+                const response = await axios.post(`http://localhost:8080/api/passports/${selectedCandidate.id}/create`, payload);
     
                 console.log('Passport added successfully:', response.data);
     

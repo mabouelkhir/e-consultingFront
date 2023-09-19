@@ -147,7 +147,7 @@ export const CandidatList = () => {
             };
             
             // Make a POST request to create the new cin object
-            const newCinResponse = await axios.post(`http://localhost:8080/cins/${selectedCandidat.id}`, newCinData);
+            const newCinResponse = await axios.post(`http://localhost:8080/api/cins/${selectedCandidat.id}`, newCinData);
             console.log('New CIN data created successfully:', newCinResponse.data);
 
             // Assign the newly created cin object to the selected candidate
@@ -169,7 +169,7 @@ export const CandidatList = () => {
 
             };
 
-            const cinUpdateResponse = await axios.put(`http://localhost:8080/cins/${selectedCandidat.cin.id}`, cinUpdateData);
+            const cinUpdateResponse = await axios.put(`http://localhost:8080/api/cins/${selectedCandidat.cin.id}`, cinUpdateData);
             console.log('CIN data updated successfully:', cinUpdateResponse.data);
         }
             // Update candidate's profile picture
